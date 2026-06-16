@@ -1,0 +1,232 @@
+@media(max-width:1024px){
+
+    header{
+        height:60px;
+        padding:0 15px;
+    }
+
+    .logo{
+        font-size:1.5rem;
+        gap:8px;
+    }
+
+    .header-logo{
+        height:40px;
+    }
+
+    footer{
+        height:55px;
+        padding:0 12px;
+    }
+
+    .footer-logo{
+        height:34px;
+    }
+
+    #status{
+        font-size:12px;
+    }
+
+    .sidebar{
+        width:70px;
+        min-width:70px;
+        max-width:70px;
+        padding:10px 6px;
+    }
+
+    .square-btn,
+    .lang-btn{
+        width:42px;
+        height:42px;
+        font-size:12px;
+    }
+
+    .execute-btn{
+        min-width:110px;
+        height:44px;
+        font-size:13px;
+    }
+
+    .output-container{
+        width:340px;
+    }
+}
+
+@media(max-width:768px){
+
+    main{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        min-width:100%;
+        max-width:100%;
+
+        height:72px;
+
+        flex-direction:row;
+
+        justify-content:flex-start;
+
+        overflow-x:auto;
+        overflow-y:hidden;
+
+        gap:8px;
+
+        border-right:none;
+        border-bottom:1px solid;
+    }
+
+    body.dark .sidebar{
+        border-color:#30363d;
+    }
+
+    body.light .sidebar{
+        border-color:#d8dde4;
+    }
+
+    .editor-container{
+        flex:1;
+        min-height:45%;
+        min-width:0;
+    }
+
+    .output-container{
+        width:100%;
+        min-width:100%;
+        max-width:100%;
+
+        height:35%;
+    }
+
+    #divider{
+        width:100%;
+        height:6px;
+        cursor:row-resize;
+    }
+
+    .editor-title{
+        display:none;
+    }
+
+    .execute-btn{
+        right:15px;
+        bottom:15px;
+    }
+
+    .file-name{
+        font-size:13px;
+    }
+
+    #output{
+        font-size:13px;
+    }
+}
+
+@media(max-width:600px){
+
+    header{
+        height:55px;
+        padding:0 12px;
+    }
+
+    .logo{
+        font-size:1.2rem;
+    }
+
+    .header-logo{
+        height:34px;
+    }
+
+    footer{
+        height:50px;
+        padding:0 10px;
+    }
+
+    .footer-logo{
+        height:28px;
+    }
+
+    #status{
+        font-size:11px;
+    }
+
+    .sidebar{
+        height:64px;
+        padding:8px;
+    }
+
+    .square-btn,
+    .lang-btn{
+        width:38px;
+        height:38px;
+        font-size:11px;
+    }
+
+    .editor-header,
+    .output-header{
+        height:40px;
+        padding:0 10px;
+    }
+
+    .execute-btn{
+        min-width:100px;
+        height:40px;
+        font-size:12px;
+    }
+
+    .file-name{
+        padding:6px 10px;
+        font-size:12px;
+    }
+
+    #output{
+        padding:12px;
+        font-size:12px;
+    }
+}
+
+@media(max-width:480px){
+
+    header{
+        height:50px;
+    }
+
+    footer{
+        height:48px;
+    }
+
+    .logo{
+        font-size:1rem;
+    }
+
+    .header-logo{
+        height:30px;
+    }
+
+    .footer-logo{
+        height:24px;
+    }
+
+    #status{
+        font-size:10px;
+    }
+
+    .sidebar{
+        gap:6px;
+    }
+
+    .square-btn,
+    .lang-btn{
+        width:36px;
+        height:36px;
+        font-size:10px;
+    }
+
+    .execute-btn{
+        min-width:90px;
+        height:36px;
+        font-size:11px;
+    }
+}
