@@ -72,7 +72,7 @@ require(["vs/editor/editor.main"],()=>{
                 ?"vs"
                 :"vs-dark",
             automaticLayout:true,
-            fontSize:16,
+            fontSize:18,
             minimap:{enabled:true},
             scrollBeyondLastLine:false,
             roundedSelection:true,
