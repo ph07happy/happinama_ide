@@ -1,0 +1,159 @@
+@media(max-width:768px){
+
+    html,
+    body{
+        width:100%;
+        height:100%;
+        min-height:100vh;
+
+        -webkit-text-size-adjust:100%;
+        touch-action:pan-x pan-y;
+    }
+
+    body{
+        overflow:hidden;
+    }
+
+    main{
+        flex-direction:column;
+        min-height:0;
+        overflow:hidden;
+    }
+
+    .sidebar{
+        width:100%;
+        min-width:100%;
+        max-width:100%;
+
+        height:70px;
+
+        flex-direction:row;
+
+        justify-content:flex-start;
+
+        overflow-x:auto;
+        overflow-y:hidden;
+
+        padding:8px;
+
+        gap:8px;
+
+        border-right:none;
+    }
+
+    .sidebar::-webkit-scrollbar{
+        display:none;
+    }
+
+    .editor-container{
+        flex:1;
+        min-height:0;
+        min-width:0;
+    }
+
+    .editor-wrapper{
+        padding-bottom:70px;
+    }
+
+    #divider{
+        width:100%;
+        height:6px;
+    }
+
+    .output-container{
+        width:100% !important;
+        min-width:100%;
+        max-width:100%;
+
+        height:35%;
+        flex-shrink:0;
+    }
+
+    .execute-btn{
+        right:15px;
+        bottom:15px;
+
+        min-width:100px;
+        height:42px;
+
+        font-size:12px;
+    }
+
+    footer{
+        height:50px;
+
+        padding:0 10px;
+
+        flex-shrink:0;
+    }
+
+    .footer-logo{
+        height:28px;
+    }
+
+    #status{
+        font-size:11px;
+    }
+}
+
+@media(max-width:480px){
+
+    header{
+        height:55px;
+        padding:0 12px;
+    }
+
+    .logo{
+        font-size:1.1rem;
+        gap:8px;
+    }
+
+    .header-logo{
+        height:34px;
+    }
+
+    .sidebar{
+        height:64px;
+    }
+
+    .square-btn,
+    .lang-btn{
+        width:38px;
+        height:38px;
+
+        font-size:11px;
+    }
+
+    .editor-header,
+    .output-header{
+        height:40px;
+    }
+
+    .file-name{
+        font-size:12px;
+        padding:6px 10px;
+    }
+
+    .execute-btn{
+        min-width:90px;
+        height:38px;
+        font-size:11px;
+    }
+
+    #output{
+        padding:12px;
+        font-size:12px;
+    }
+
+    footer{
+        height:46px;
+    }
+
+    .footer-logo{
+        height:24px;
+    }
+
+    #status{
+        font-size:10px;
+    }
+}
