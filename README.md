@@ -1,2 +1,3 @@
 # happinama_ide
-compiler for c, c++ and python
+developing ide for c, c++, python, java and sql.
+currently backend is not integrated.
