@@ -12,7 +12,7 @@ const templates={
 
 int main()
 {
-    printf("Happy Coding");
+    printf("just happy");
     return 0;
 }`,
     cpp:`#include <iostream>
@@ -20,28 +20,40 @@ using namespace std;
 
 int main()
 {
-    cout<<"Happy Coding";
+    cout<<"just happy";
     return 0;
 }`,
     java:`public class Main
 {
     public static void main(String[] args)
     {
-        System.out.println("Happy Coding");
+        System.out.println("just happy");
     }
 }`,
-    python:`print("Happy Coding")`
+    python:`print("just happy")`,
+    sql:`SELECT 'just happy' AS message;`
 };
 
 const languageBuffers={
     c:templates.c,
     cpp:templates.cpp,
     java:templates.java,
-    python:templates.python
+    python:templates.python,
+    sql:templates.sql
 };
 
-const savedTheme=
-    localStorage.getItem("theme")||"dark";
+const monacoLanguageMap={
+    c:"c",
+    cpp:"cpp",
+    java:"java",
+    python:"python",
+    sql:"sql"
+};
+
+let savedTheme="dark";
+try{
+    savedTheme=localStorage.getItem("theme")||"dark";
+}catch(e){}
 
 document.body.classList.add(savedTheme);
 
@@ -58,8 +70,11 @@ const cBtn=document.getElementById("cBtn");
 const cppBtn=document.getElementById("cppBtn");
 const javaBtn=document.getElementById("javaBtn");
 const pythonBtn=document.getElementById("pythonBtn");
+const sqlBtn=document.getElementById("sqlBtn");
 
 const fileName=document.getElementById("fileName");
+
+const langButtons=[cBtn,cppBtn,javaBtn,pythonBtn,sqlBtn];
 
 require(["vs/editor/editor.main"],()=>{
 
@@ -68,9 +83,7 @@ require(["vs/editor/editor.main"],()=>{
         {
             value:templates.c,
             language:"c",
-            theme:savedTheme==="light"
-                ?"vs"
-                :"vs-dark",
+            theme:savedTheme==="light"?"vs":"vs-dark",
             automaticLayout:true,
             fontSize:18,
             minimap:{enabled:true},
@@ -84,18 +97,14 @@ require(["vs/editor/editor.main"],()=>{
     window.editor=editor;
 
     editor.addCommand(
-        monaco.KeyMod.CtrlCmd|
-        monaco.KeyCode.Enter,
-        ()=>{
-            executeProgram();
-        }
+        monaco.KeyMod.CtrlCmd|monaco.KeyCode.Enter,
+        ()=>executeProgram()
     );
 });
 
 function executeProgram(){
 
-    status.innerHTML=
-        "<b>Compiling...</b>";
+    status.innerHTML="<b>Compiling...</b>";
 
     output.textContent=
 `Backend not connected.
@@ -104,100 +113,70 @@ Language: ${currentLanguage.toUpperCase()}
 
 Next Step:
 • FastAPI
-• GCC
-• G++
+• GCC / G++
 • Java
-• Python`;
+• Python
+• sql.js (SQL)`;
 
     setTimeout(()=>{
-
-        status.innerHTML=
-        "<b>© 2026 happinama. All rights reserved.</b>";
-
+        status.innerHTML="<b>© 2026 happinama. All rights reserved.</b>";
     },1000);
 }
 
-runBtn.addEventListener(
-    "click",
-    executeProgram
-);
+runBtn.addEventListener("click",executeProgram);
 
 function updateThemeIcon(){
-
     themeBtn.textContent=
-        document.body.classList.contains("light")
-        ?"☼"
-        :"☾";
+        document.body.classList.contains("light")?"☼":"☾";
 }
 
 updateThemeIcon();
 
 themeBtn.addEventListener("click",()=>{
 
-    if(document.body.classList.contains("dark")){
+    if(!editor) return;
 
-        document.body.classList.replace(
-            "dark",
-            "light"
-        );
+    const goingLight=document.body.classList.contains("dark");
 
-        localStorage.setItem(
-            "theme",
-            "light"
-        );
+    document.body.classList.replace(
+        goingLight?"dark":"light",
+        goingLight?"light":"dark"
+    );
 
-        monaco.editor.setTheme("vs");
+    try{
+        localStorage.setItem("theme",goingLight?"light":"dark");
+    }catch(e){}
 
-    }else{
-
-        document.body.classList.replace(
-            "light",
-            "dark"
-        );
-
-        localStorage.setItem(
-            "theme",
-            "dark"
-        );
-
-        monaco.editor.setTheme("vs-dark");
-    }
+    monaco.editor.setTheme(goingLight?"vs":"vs-dark");
 
     updateThemeIcon();
 });
 
 undoBtn.addEventListener("click",()=>{
-
-    if(editor){
-
-        editor.trigger("","undo");
-        editor.focus();
-    }
+    if(!editor) return;
+    editor.trigger("","undo");
+    editor.focus();
 });
 
 redoBtn.addEventListener("click",()=>{
-
-    if(editor){
-
-        editor.trigger("","redo");
-        editor.focus();
-    }
+    if(!editor) return;
+    editor.trigger("","redo");
+    editor.focus();
 });
 
 function clearLanguageSelection(){
-
-    cBtn.classList.remove("active-lang");
-    cppBtn.classList.remove("active-lang");
-    javaBtn.classList.remove("active-lang");
-    pythonBtn.classList.remove("active-lang");
+    langButtons.forEach(btn=>{
+        btn.classList.remove("active-lang");
+        btn.setAttribute("aria-pressed","false");
+    });
 }
 
 function setLanguage(language,file,button){
 
     if(!editor) return;
+    if(language===currentLanguage) return;
 
-    languageBuffers[currentLanguage]=
-        editor.getValue();
+    languageBuffers[currentLanguage]=editor.getValue();
 
     currentLanguage=language;
 
@@ -206,72 +185,48 @@ function setLanguage(language,file,button){
     clearLanguageSelection();
 
     button.classList.add("active-lang");
+    button.setAttribute("aria-pressed","true");
 
     monaco.editor.setModelLanguage(
         editor.getModel(),
-        language==="cpp"
-        ?"cpp"
-        :language==="java"
-        ?"java"
-        :language==="python"
-        ?"python"
-        :"c"
+        monacoLanguageMap[language]
     );
 
-    editor.setValue(
-        languageBuffers[language]
-    );
+    editor.setValue(languageBuffers[language]);
 
     editor.focus();
 }
 
-cBtn.addEventListener(
-    "click",
-    ()=>setLanguage("c","main.c",cBtn)
-);
+cBtn.addEventListener("click",
+    ()=>setLanguage("c","main.c",cBtn));
 
-cppBtn.addEventListener(
-    "click",
-    ()=>setLanguage("cpp","main.cpp",cppBtn)
-);
+cppBtn.addEventListener("click",
+    ()=>setLanguage("cpp","main.cpp",cppBtn));
 
-javaBtn.addEventListener(
-    "click",
-    ()=>setLanguage("java","Main.java",javaBtn)
-);
+javaBtn.addEventListener("click",
+    ()=>setLanguage("java","Main.java",javaBtn));
 
-pythonBtn.addEventListener(
-    "click",
-    ()=>setLanguage("python","main.py",pythonBtn)
-);
+pythonBtn.addEventListener("click",
+    ()=>setLanguage("python","main.py",pythonBtn));
 
-clearOutputBtn.addEventListener(
-    "click",
-    ()=>{
-        output.textContent="";
-    }
-);
+sqlBtn.addEventListener("click",
+    ()=>setLanguage("sql","query.sql",sqlBtn));
 
-clearScreenBtn.addEventListener(
-    "click",
-    ()=>{
+clearOutputBtn.addEventListener("click",()=>{
+    output.textContent="";
+});
 
-        if(!editor) return;
+clearScreenBtn.addEventListener("click",()=>{
 
-        editor.focus();
+    if(!editor) return;
 
-        editor.executeEdits(
-            "clear-screen",
-            [{
-                range:
-                    editor.getModel()
-                    .getFullModelRange(),
-                text:""
-            }]
-        );
+    editor.executeEdits("clear-screen",[{
+        range:editor.getModel().getFullModelRange(),
+        text:""
+    }]);
 
-        editor.pushUndoStop();
+    editor.pushUndoStop();
+    editor.focus();
 
-        output.textContent="";
-    }
-);
+    output.textContent="";
+});
