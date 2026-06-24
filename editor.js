@@ -12,7 +12,7 @@ const templates={
 
 int main()
 {
-    printf("just happy things");
+    printf("Happy Coding");
     return 0;
 }`,
     cpp:`#include <iostream>
@@ -20,18 +20,18 @@ using namespace std;
 
 int main()
 {
-    cout<<"just happy things";
+    cout<<"Happy Coding";
     return 0;
 }`,
     java:`public class Main
 {
     public static void main(String[] args)
     {
-        System.out.println("just happy things");
+        System.out.println("Happy Coding");
     }
 }`,
-    python:`print("just happy things")`,
-    sql:`SELECT 'just happy things' AS message;`
+    python:`print("Happy Coding")`,
+    sql:`SELECT 'Happy Coding' AS message;`
 };
 
 const languageBuffers={
@@ -100,7 +100,94 @@ require(["vs/editor/editor.main"],()=>{
         monaco.KeyMod.CtrlCmd|monaco.KeyCode.Enter,
         ()=>executeProgram()
     );
+
+    initEditorPinchZoom();
 });
+
+function initEditorPinchZoom(){
+
+    const wrapper=document.querySelector(".editor-wrapper");
+    const editorDom=document.getElementById("editor");
+
+    let scale=1;
+    const minScale=0.5;
+    const maxScale=4;
+    let initialDist=null;
+    let lastScale=1;
+    let originX=0;
+    let originY=0;
+    let translateX=0;
+    let translateY=0;
+
+    function getDistance(t){
+        const dx=t[0].clientX-t[1].clientX;
+        const dy=t[0].clientY-t[1].clientY;
+        return Math.hypot(dx,dy);
+    }
+
+    function getMidpoint(t){
+        return{
+            x:(t[0].clientX+t[1].clientX)/2,
+            y:(t[0].clientY+t[1].clientY)/2
+        };
+    }
+
+    function applyTransform(){
+        editorDom.style.transformOrigin="0 0";
+        editorDom.style.transform=
+            `translate(${translateX}px,${translateY}px) scale(${scale})`;
+    }
+
+    function resetTransform(){
+        scale=1;
+        translateX=0;
+        translateY=0;
+        editorDom.style.transform="none";
+        if(window.editor) window.editor.layout();
+    }
+
+    wrapper.addEventListener("touchstart",e=>{
+        if(e.touches.length===2){
+            e.preventDefault();
+            initialDist=getDistance(e.touches);
+            lastScale=scale;
+            const mid=getMidpoint(e.touches);
+            const rect=wrapper.getBoundingClientRect();
+            originX=mid.x-rect.left;
+            originY=mid.y-rect.top;
+        }
+    },{passive:false});
+
+    wrapper.addEventListener("touchmove",e=>{
+        if(e.touches.length===2&&initialDist!==null){
+            e.preventDefault();
+
+            const dist=getDistance(e.touches);
+            const ratio=dist/initialDist;
+            const newScale=Math.min(maxScale,Math.max(minScale,lastScale*ratio));
+
+            const mid=getMidpoint(e.touches);
+            const rect=wrapper.getBoundingClientRect();
+            const midX=mid.x-rect.left;
+            const midY=mid.y-rect.top;
+
+            translateX=midX-(midX-translateX)*(newScale/scale);
+            translateY=midY-(midY-translateY)*(newScale/scale);
+            scale=newScale;
+
+            applyTransform();
+        }
+    },{passive:false});
+
+    wrapper.addEventListener("touchend",e=>{
+        if(e.touches.length<2){
+            initialDist=null;
+            if(scale<=1.05) resetTransform();
+        }
+    });
+
+    wrapper.addEventListener("dblclick",resetTransform);
+}
 
 function executeProgram(){
 
