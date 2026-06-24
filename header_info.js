@@ -27,19 +27,12 @@ async function fetchLocationAndWeather(){
 
     try{
 
-        const geoRes=await fetch("https://ip-api.com/json/?fields=status,city,regionName,lat,lon");
+        const geoRes=await fetch("https://ip-api.com/json/?fields=status,city,lat,lon");
         const geo=await geoRes.json();
 
         if(geo.status!=="success") throw new Error("geo failed");
 
-        const city=geo.city||"";
-        const region=geo.regionName||"";
-        const locationLabel=
-            [city,region]
-            .filter(Boolean)
-            .join(", ")
-            .toLowerCase();
-
+        const city=(geo.city||"").toLowerCase();
         const lat=geo.lat.toFixed(4);
         const lon=geo.lon.toFixed(4);
 
@@ -50,11 +43,30 @@ async function fetchLocationAndWeather(){
 
         const temp=Math.round(weather.current.temperature_2m);
 
-        headerWeather.textContent=`${temp}°C | ${locationLabel} | ${lat}, ${lon}`;
+        headerWeather.textContent=`${temp}°C | ${city} | ${lat}, ${lon}`;
 
     }catch(e){
 
-        headerWeather.textContent="";
+        try{
+            const fallbackRes=await fetch("https://ipapi.co/json/");
+            const fallback=await fallbackRes.json();
+
+            const city=(fallback.city||"").toLowerCase();
+            const lat=parseFloat(fallback.latitude).toFixed(4);
+            const lon=parseFloat(fallback.longitude).toFixed(4);
+
+            const weatherRes=await fetch(
+                `https://api.open-meteo.com/v1/forecast?latitude=${fallback.latitude}&longitude=${fallback.longitude}&current=temperature_2m&temperature_unit=celsius&forecast_days=1`
+            );
+            const weather=await weatherRes.json();
+            const temp=Math.round(weather.current.temperature_2m);
+
+            headerWeather.textContent=`${temp}°C | ${city} | ${lat}, ${lon}`;
+
+        }catch(e2){
+
+            headerWeather.textContent="";
+        }
     }
 }
 
