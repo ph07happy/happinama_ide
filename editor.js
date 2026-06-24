@@ -12,7 +12,7 @@ const templates={
 
 int main()
 {
-    printf("Happy Coding");
+    printf("just happy things");
     return 0;
 }`,
     cpp:`#include <iostream>
@@ -20,18 +20,18 @@ using namespace std;
 
 int main()
 {
-    cout<<"Happy Coding";
+    cout<<"just happy things";
     return 0;
 }`,
     java:`public class Main
 {
     public static void main(String[] args)
     {
-        System.out.println("Happy Coding");
+        System.out.println("just happy things");
     }
 }`,
-    python:`print("Happy Coding")`,
-    sql:`SELECT 'Happy Coding' AS message;`
+    python:`print("just happy things")`,
+    sql:`SELECT 'just happy things' AS message;`
 };
 
 const languageBuffers={
