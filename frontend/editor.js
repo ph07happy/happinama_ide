@@ -4,7 +4,7 @@ require.config({
 
 let editor;
 let currentLanguage = "c";
-const BACKEND_URL = "https://happinama-backend.onrender.com";
+const BACKEND_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:8000" : "https://happinama-backend.onrender.com";
 
 const templates = {
     c: `#include <stdio.h>\n\nint main()\n{\n    printf("just happy things");\n    return 0;\n}`,
