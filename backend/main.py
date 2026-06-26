@@ -7,7 +7,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from pydantic import BaseModel
 
-JUDGE0_URL=os.environ.get("JUDGE0_URL","http://localhost:2358")
+JUDGE0_URL=os.environ.get("JUDGE0_URL","https://happinama-ide.vercel.app/")
 
 LANGUAGE_MAP={
     "c":50,
