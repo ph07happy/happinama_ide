@@ -7,6 +7,8 @@ require.config({
 let editor;
 let currentLanguage="c";
 
+const BACKEND_URL="http://localhost:8000";
+
 const templates={
     c:`#include <stdio.h>
 
@@ -189,25 +191,65 @@ function initEditorPinchZoom(){
     wrapper.addEventListener("dblclick",resetTransform);
 }
 
-function executeProgram(){
+async function executeProgram(){
 
-    status.innerHTML="<b>Compiling...</b>";
+    if(!editor) return;
 
-    output.textContent=
-`Backend not connected.
+    const code=editor.getValue();
 
-Language: ${currentLanguage.toUpperCase()}
+    if(!code.trim()){
+        output.textContent="nothing to execute.";
+        return;
+    }
 
-Next Step:
-• FastAPI
-• GCC / G++
-• Java
-• Python
-• sql.js (SQL)`;
+    runBtn.disabled=true;
+    status.innerHTML="<b>compiling...</b>";
+    output.textContent="running...";
 
-    setTimeout(()=>{
-        status.innerHTML="<b>© 2026 happinama. All rights reserved.</b>";
-    },1000);
+    try{
+
+        const res=await fetch(`${BACKEND_URL}/execute`,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({
+                language:currentLanguage,
+                source_code:code,
+                stdin:""
+            })
+        });
+
+        if(!res.ok){
+            const err=await res.json().catch(()=>({}));
+            output.textContent=`error ${res.status}: ${err.detail||res.statusText}`;
+            status.innerHTML="<b>execution failed.</b>";
+            return;
+        }
+
+        const data=await res.json();
+        output.textContent=data.output;
+
+        const ok=data.status==="Accepted";
+        status.innerHTML=ok
+            ?"<b>executed successfully.</b>"
+            :`<b>${data.status}</b>`;
+
+    }catch(e){
+
+        output.textContent=
+`could not reach backend.
+make sure FastAPI is running at ${BACKEND_URL}
+
+error: ${e.message}`;
+        status.innerHTML="<b>backend unreachable.</b>";
+
+    }finally{
+
+        runBtn.disabled=false;
+
+        setTimeout(()=>{
+            status.innerHTML="<b>© 2026 happinama. All rights reserved.</b>";
+        },4000);
+    }
 }
 
 runBtn.addEventListener("click",executeProgram);
