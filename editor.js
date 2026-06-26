@@ -7,7 +7,7 @@ require.config({
 let editor;
 let currentLanguage="c";
 
-const BACKEND_URL="http://localhost:8000";
+const BACKEND_URL="https://happinama-backend.onrender.com";
 
 const templates={
     c:`#include <stdio.h>
